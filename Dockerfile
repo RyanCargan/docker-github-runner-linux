@@ -10,7 +10,13 @@ RUN echo 'Acquire::http::Proxy "http://127.0.0.1:3142";' > /etc/apt/apt.conf.d/0
 
 # Update and install necessary tools
 RUN apt-get update -y && apt-get upgrade -y && \
-    apt-get install -y curl gpg lsb-release
+    apt-get install -y curl gpg lsb-release sudo git
+
+# Install git-filter-repo with a shallow clone
+RUN git clone --depth 1 https://github.com/newren/git-filter-repo.git /tmp/git-filter-repo && \
+    cp /tmp/git-filter-repo/git-filter-repo /usr/local/bin/ && \
+    chmod +x /usr/local/bin/git-filter-repo && \
+    rm -rf /tmp/git-filter-repo
 
 # Add Microsoft repository key and Azure CLI repository
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
@@ -20,7 +26,7 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
 
 # Update and install packages including openssh-client
 RUN apt-get install -y --no-install-recommends wget unzip vim
-RUN apt-get install -y --no-install-recommends git azure-cli jq
+RUN apt-get install -y --no-install-recommends azure-cli jq
 RUN apt-get install -y --no-install-recommends build-essential libssl-dev libffi-dev
 RUN apt-get install -y --no-install-recommends python3 python3-venv python3-dev python3-pip openssh-client
 
