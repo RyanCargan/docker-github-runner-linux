@@ -1,5 +1,5 @@
 ---
-version: '3.8'
+version: "3.8"
 
 services:
   runner:
@@ -7,7 +7,7 @@ services:
     build:
       context: .
       args:
-        RUNNER_VERSION: '2.292.0'
+        RUNNER_VERSION: "2.311.0"
     environment:
       GH_TOKEN: ${GH_TOKEN}
       GH_OWNER: ${GH_OWNER}
