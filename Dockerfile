@@ -10,7 +10,7 @@ RUN echo 'Acquire::http::Proxy "http://127.0.0.1:3142";' > /etc/apt/apt.conf.d/0
 
 # Update and install necessary tools
 RUN apt-get update -y && apt-get upgrade -y && \
-    apt-get install -y curl gpg lsb-release sudo git
+    apt-get install -y curl gpg lsb-release sudo git rsync
 
 # Install git-filter-repo with a shallow clone
 RUN git clone --depth 1 https://github.com/newren/git-filter-repo.git /tmp/git-filter-repo && \
