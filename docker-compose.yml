@@ -9,31 +9,59 @@ services:
       - apt-cache:/var/cache/apt-cacher-ng
     ports:
       - "3142:3142"
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: 512M
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "1.0"
+    #       memory: 512M
 
   runner:
     image: pwd9000-github-runner-lin:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/ryan/.local/share/pnpm/store/v3:/home/docker/.pnpm-store
     build:
       network: host
       context: .
       dockerfile: Dockerfile
       args:
         RUNNER_VERSION: "2.311.0"
+        DOCKER_GID: ${DOCKER_GID}
     environment:
       GH_TOKEN: ${GH_TOKEN}
       GH_OWNER: ${GH_OWNER}
       GH_REPOSITORY: ${GH_REPOSITORY}
     depends_on:
       - apt-cacher-ng
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: 2048M
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "1.0"
+    #       memory: 2048M
+
+  runner2:
+    image: pwd9000-github-runner-lin:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/ryan/.local/share/pnpm/store/v3:/home/docker/.pnpm-store
+    build:
+      network: host
+      context: .
+      dockerfile: Dockerfile
+      args:
+        RUNNER_VERSION: "2.311.0"
+        DOCKER_GID: ${DOCKER_GID}
+    environment:
+      GH_TOKEN: ${GH_TOKEN2}
+      GH_OWNER: ${GH_OWNER2}
+      GH_REPOSITORY: ${GH_REPOSITORY2}
+    depends_on:
+      - apt-cacher-ng
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "1.0"
+    #       memory: 2048M
 
 volumes:
   apt-cache: {}

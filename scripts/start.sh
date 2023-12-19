@@ -1,5 +1,7 @@
 #!/bin/bash
 
+docker --version
+
 GH_OWNER=$GH_OWNER
 GH_REPOSITORY=$GH_REPOSITORY
 GH_TOKEN=$GH_TOKEN
