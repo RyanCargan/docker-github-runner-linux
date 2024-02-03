@@ -17,6 +17,7 @@ services:
   verdaccio:
     image: verdaccio/verdaccio
     volumes:
+      - ./verdaccio/config.yaml:/verdaccio/conf/config.yaml
       - verdaccio_storage:/verdaccio/storage
     ports:
       - "4873:4873"

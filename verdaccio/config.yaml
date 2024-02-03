@@ -1,0 +1,23 @@
+storage: /verdaccio/storage
+
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+    http_timeout: 100000 # Timeout in milliseconds
+    max_fails: 5
+    maxage: "10m" # Cache time for uplink metadata
+
+packages:
+  "@*/*":
+    # allow all actions (access, publish) for scoped packages without authentication
+    access: $all
+    publish: $all
+    proxy: npmjs
+
+  "**":
+    # allow all actions (access, publish) for non-scoped packages without authentication
+    access: $all
+    publish: $all
+    proxy: npmjs
+# Since we're allowing $all to access and publish, the auth section is not needed for authentication.
+# You can omit the auth section entirely, or leave it as is with no practical effect if no authentication is required.
