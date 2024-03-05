@@ -14,6 +14,16 @@ services:
     #     limits:
     #       cpus: "1.0"
     #       memory: 512M
+
+  squid-deb-proxy:
+    build:
+      context: ./squid-deb-proxy # Path to the new Dockerfile
+      dockerfile: Dockerfile
+    volumes:
+      - squid-cache:/var/spool/squid-deb-proxy
+    ports:
+      - "3142:3142"
+
   verdaccio:
     image: verdaccio/verdaccio
     volumes:
@@ -33,7 +43,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        RUNNER_VERSION: "2.311.0"
+        RUNNER_VERSION: "2.314.1"
         DOCKER_GID: ${DOCKER_GID}
     environment:
       GH_TOKEN: ${GH_TOKEN}
@@ -58,7 +68,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        RUNNER_VERSION: "2.311.0"
+        RUNNER_VERSION: "2.314.1"
         DOCKER_GID: ${DOCKER_GID}
     environment:
       GH_TOKEN: ${GH_TOKEN2}
@@ -83,7 +93,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        RUNNER_VERSION: "2.311.0"
+        RUNNER_VERSION: "2.314.1"
         DOCKER_GID: ${DOCKER_GID}
     environment:
       GH_TOKEN: ${GH_TOKEN3}
@@ -99,4 +109,5 @@ services:
 
 volumes:
   apt-cache: {}
+  squid-cache: {}
   verdaccio_storage: {}

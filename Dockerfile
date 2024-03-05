@@ -6,13 +6,13 @@ ARG RUNNER_VERSION
 ARG DOCKER_GID
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Configure apt to use the host's apt-cacher-ng proxy
+# Configure apt to use the host's apt proxy
 RUN echo 'Acquire::http::Proxy "http://127.0.0.1:3142";' > /etc/apt/apt.conf.d/01proxy
 # HTTPS bypass for docker repos (will fail if some domains are not covered)
 # RUN echo 'Acquire::HTTPS::Proxy::download.docker.com "DIRECT";' >> /etc/apt/apt.conf.d/01proxy
 
 # Update and install necessary tools
-RUN apt-get update -y && apt-get upgrade -y && \
+RUN apt-get clean -y && apt-get update -y && apt-get upgrade -y && \
     apt-get install -y curl gpg lsb-release sudo git rsync git-lfs
 
 # Install git-filter-repo with a shallow clone
@@ -66,6 +66,9 @@ ADD scripts/start.sh start.sh
 
 # make the script executable
 RUN chmod +x start.sh
+
+# set alias to prevent errors when "python" is expected
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # set the user to "docker" so all subsequent commands are run as the docker user
 USER docker
