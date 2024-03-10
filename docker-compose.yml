@@ -107,6 +107,31 @@ services:
     #       cpus: "1.0"
     #       memory: 2048M
 
+  runner4:
+    image: pwd9000-github-runner-lin:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/ryan/.local/share/pnpm/store/v3:/home/docker/.pnpm-store
+      - /run/media/ryan/ubuntu/cache:/home/docker/cache
+    build:
+      network: host
+      context: .
+      dockerfile: Dockerfile
+      args:
+        RUNNER_VERSION: "2.314.1"
+        DOCKER_GID: ${DOCKER_GID}
+    environment:
+      GH_TOKEN: ${GH_TOKEN4}
+      GH_OWNER: ${GH_OWNER4}
+      GH_REPOSITORY: ${GH_REPOSITORY4}
+    depends_on:
+      - apt-cacher-ng
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "1.0"
+    #       memory: 2048M
+
 volumes:
   apt-cache: {}
   squid-cache: {}
