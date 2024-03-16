@@ -15,6 +15,65 @@ services:
     #       cpus: "1.0"
     #       memory: 512M
 
+  tinyproxy:
+    image: docker.io/kalaksi/tinyproxy
+    # You can also use GitLab as an alternative to Docker Hub:
+    # image: registry.gitlab.com/kalaksi-containers/tinyproxy
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    ports:
+      - 8888:8888
+    # See tinyproxy.conf for better explanation of these values.
+    environment:
+      # Set to "yes" to disable the Via-header, set to empty to leave it enabled.
+      DISABLE_VIA_HEADER: "yes"
+      # Set this to e.g. tinyproxy.stats to enable stats-page on that address
+      STAT_HOST: tinyproxy.stats
+      MAX_CLIENTS: 100
+      # A space separated list:
+      ALLOWED_NETWORKS: 127.0.0.1/8 10.0.0.0/8
+      # One of Critical, Error, Warning, Notice, Connect, Info
+      LOG_LEVEL: Notice
+      # Maximum number of seconds idle connections are allowed to remain open
+      TIMEOUT: 900
+      # Username for BasicAuth
+      # AUTH_USER: ''
+      # Password for BasicAuth (letters and digits only)
+      # Prefer secrets-mechanisms instead of environment variables.
+      # AUTH_PASSWORD: ''
+    # secrets:
+    #   - auth_password
+    # # With Alpine base image, this is required, for some reason, or /run/secrets won't get mounted.
+    # tmpfs:
+    #   - /run
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-I",
+          "-H",
+          "Host: tinyproxy.stats",
+          "http://localhost:8888",
+        ]
+      interval: 5m
+      timeout: 10s
+      retries: 1
+    volumes:
+      - apk-cache:/var/cache/apk
+    # volumes:
+    #   # If not using docker-compose for secrets, you can still manually mount a file containing the password.
+    #   - ./secrets/auth_password:/run/secrets/auth_password:ro
+
+  # tinyproxy:
+  #   image: joshuarli/tinyproxy # Or a suitable Tinyproxy image
+  #   volumes:
+  #     - apk-cache:/var/cache/apk
+  #   ports:
+  #     - "3142:8888" # Proxy port:Port inside the container
+  #   # You might need to add volumes or other config as needed
+
   squid-deb-proxy:
     build:
       context: ./squid-deb-proxy # Path to the new Dockerfile
@@ -22,7 +81,7 @@ services:
     volumes:
       - squid-cache:/var/spool/squid-deb-proxy
     ports:
-      - "3142:3142"
+      - "3142:3143"
 
   verdaccio:
     image: verdaccio/verdaccio
@@ -134,5 +193,6 @@ services:
 
 volumes:
   apt-cache: {}
+  apk-cache: {}
   squid-cache: {}
   verdaccio_storage: {}
